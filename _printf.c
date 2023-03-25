@@ -1,64 +1,63 @@
+#include "main.h"
 #include <stdarg.h>
-#include <unistd.h>
+#include <stdio.h>
 
 /**
- * _printf - produces output according to a format.
- * @format: character string containing zero or more directives.
- * Return: number of characters printed (excluding null byte used to end output to strings).
+ * _printf - produces output according to a format
+ * @format: character string containing zero or more directives
+ *
+ * Return: number of characters printed (excluding null byte)
  */
 int _printf(const char *format, ...)
 {
-    va_list arg;
-    int printed_chars = 0;
+	va_list args;
+	int printed_chars = 0;
 
-    va_start(arg, format);
+	va_start(args, format);
 
-    while (*format)
-    {
-        if (*format == '%')
-        {
-            format++;
-
-            if (*format == 'c')
-            {
-                char c = va_arg(arg, int);
-                write(1, &c, 1);
-                printed_chars++;
-            }
-            else if (*format == 's')
-            {
-                char *str = va_arg(arg, char *);
-                int len = 0;
-
-                while (str[len])
-                    len++;
-
-                write(1, str, len);
-                printed_chars += len;
-            }
-            else if (*format == '%')
-            {
-                write(1, "%", 1);
-                printed_chars++;
-            }
-            else
-            {
-                write(1, "%", 1);
-                write(1, format, 1);
-                printed_chars += 2;
-            }
-        }
-        else
-        {
-            write(1, format, 1);
-            printed_chars++;
-        }
-
-        format++;
-    }
-
-    va_end(arg);
-
-    return (printed_chars);
+	while (*format)
+	{
+		if (*format == '%')
+		{
+			format++;
+			if (*format == 'c')
+			{
+				char c = va_arg(args, int);
+				putchar(c);
+				printed_chars++;
+			}
+			else if (*format == 's')
+			{
+				char *str = va_arg(args, char *);
+				if (!str)
+					str = "(null)";
+				while (*str)
+				{
+					putchar(*str);
+					printed_chars++;
+					str++;
+				}
+			}
+			else if (*format == '%')
+			{
+				putchar('%');
+				printed_chars++;
+			}
+			else
+			{
+				putchar('%');
+				putchar(*format);
+				printed_chars += 2;
+			}
+		}
+		else
+		{
+			putchar(*format);
+			printed_chars++;
+		}
+		format++;
+	}
+	va_end(args);
+	return (printed_chars);
 }
 
