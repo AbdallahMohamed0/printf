@@ -1,63 +1,51 @@
-#include "main.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include "main.h"
 
 /**
- * _printf - produces output according to a format
- * @format: character string containing zero or more directives
+ * _printf - Custom printf function
+ * @format: Format string
  *
- * Return: number of characters printed (excluding null byte)
+ * Return: Number of characters printed (excluding null byte)
  */
 int _printf(const char *format, ...)
 {
-	va_list args;
-	int printed_chars = 0;
+    int i = 0, len = 0;
+    va_list args;
 
-	va_start(args, format);
+    va_start(args, format);
 
-	while (*format)
-	{
-		if (*format == '%')
-		{
-			format++;
-			if (*format == 'c')
-			{
-				char c = va_arg(args, int);
-				putchar(c);
-				printed_chars++;
-			}
-			else if (*format == 's')
-			{
-				char *str = va_arg(args, char *);
-				if (!str)
-					str = "(null)";
-				while (*str)
-				{
-					putchar(*str);
-					printed_chars++;
-					str++;
-				}
-			}
-			else if (*format == '%')
-			{
-				putchar('%');
-				printed_chars++;
-			}
-			else
-			{
-				putchar('%');
-				putchar(*format);
-				printed_chars += 2;
-			}
-		}
-		else
-		{
-			putchar(*format);
-			printed_chars++;
-		}
-		format++;
-	}
-	va_end(args);
-	return (printed_chars);
+    while (format && format[i])
+    {
+        if (format[i] == '%')
+        {
+            i++;
+            switch (format[i])
+            {
+                case 'c':
+                    len += putchar(va_arg(args, int));
+                    break;
+                case 's':
+                    len += printf("%s", va_arg(args, char *));
+                    break;
+                case '%':
+                    len += putchar('%');
+                    break;
+                default:
+                    putchar('%');
+                    putchar(format[i]);
+                    len += 2;
+                    break;
+            }
+        }
+        else
+        {
+            len += putchar(format[i]);
+        }
+        i++;
+    }
+
+    va_end(args);
+    return len;
 }
 
